@@ -3,7 +3,12 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { BscConnector } from '@binance-chain/bsc-connector'
 import { IRPCMap } from '@walletconnect/types'
-import getNodeUrl from './getRpcUrl'
+import { AbiItem } from 'web3-utils'
+
+import { Address } from '@/config/types'
+
+import getNodeUrl from '@/utils/getRpcUrl'
+import web3NoAccount from '@/utils/web3'
 
 export const connectorLocalStorageKey = 'connectorId'
 
@@ -13,24 +18,21 @@ export enum ConnectorNames {
   BSC = 'bsc',
 }
 
-const POLLING_INTERVAL = 12000
-
 const rpcUrl = getNodeUrl()
 
-const chainId: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '56')
+const chainId: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '66')
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [56, 97]
+  supportedChainIds: [66, 97]
 })
 
 export const walletconnect = new WalletConnectConnector({
   rpc: { [chainId]: rpcUrl } as IRPCMap,
   bridge: 'https://bridge.walletconnect.org',
-  qrcode: true,
-  pollingInterval: POLLING_INTERVAL
+  qrcode: true
 })
 
-export const bscConnector = new BscConnector({ supportedChainIds: [56] })
+export const bscConnector = new BscConnector({ supportedChainIds: [66] })
 
 export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
   [ConnectorNames.Injected]: injected,
@@ -40,4 +42,17 @@ export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
 
 export const getLibrary = (provider: any): Web3 => {
   return provider
+}
+
+// 获取地址公共函数
+export const getAddress = (address: Address): string => {
+  const mainNetChainId = 66
+  const chainId = process.env.REACT_APP_CHAIN_ID ?? '66'
+  return address[chainId] != null ? address[chainId] : address[mainNetChainId]
+}
+
+// 创建连接公共函数
+export const getContract = (abi: any, address: string, web3?: Web3): any => {
+  const _web3 = web3 ?? web3NoAccount
+  return new _web3.eth.Contract((abi as unknown) as AbiItem, address)
 }

@@ -8,7 +8,7 @@ import { nodes } from './getRpcUrl'
 export const setupNetwork = async (): Promise<boolean> => {
   const provider = (window as any).ethereum
   if (provider != null) {
-    const chainId = parseInt(process.env.REACT_APP_CHAIN_ID ?? '56')
+    const chainId = parseInt(process.env.REACT_APP_CHAIN_ID ?? '66')
     try {
       await provider.request({
         method: 'wallet_addEthereumChain',
