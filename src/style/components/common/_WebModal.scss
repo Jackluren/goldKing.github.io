@@ -1,0 +1,18 @@
+.web-modal {
+  &-mask {
+    position: fixed;top: 0;left: 0;right: 0;bottom: 0;
+    background: rgba($c00, .5);
+    z-index: 20;
+  }
+  &-body {
+    position: fixed;width: 300px;height: 400px;left: 50%;top: 50%;padding: 20px;
+    @include yd(-50%, -50%);
+    background: $cff;z-index: 21;
+    &-header {
+      padding-bottom: 20px;
+      &-close {
+        float: right;cursor: pointer;
+      }
+    }
+  }
+}
