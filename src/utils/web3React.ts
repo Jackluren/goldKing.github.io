@@ -3,12 +3,7 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { BscConnector } from '@binance-chain/bsc-connector'
 import { IRPCMap } from '@walletconnect/types'
-import { AbiItem } from 'web3-utils'
-
-import { Address } from '@/config/types'
-
-import getNodeUrl from '@/utils/getRpcUrl'
-import web3NoAccount from '@/utils/web3'
+import getNodeUrl from './getRpcUrl'
 
 export const connectorLocalStorageKey = 'connectorId'
 
@@ -20,10 +15,10 @@ export enum ConnectorNames {
 
 const rpcUrl = getNodeUrl()
 
-const chainId: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '66')
+const chainId: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '56')
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [66, 97]
+  supportedChainIds: [56, 97]
 })
 
 export const walletconnect = new WalletConnectConnector({
@@ -32,7 +27,7 @@ export const walletconnect = new WalletConnectConnector({
   qrcode: true
 })
 
-export const bscConnector = new BscConnector({ supportedChainIds: [66] })
+export const bscConnector = new BscConnector({ supportedChainIds: [56] })
 
 export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
   [ConnectorNames.Injected]: injected,
@@ -42,17 +37,4 @@ export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
 
 export const getLibrary = (provider: any): Web3 => {
   return provider
-}
-
-// 获取地址公共函数
-export const getAddress = (address: Address): string => {
-  const mainNetChainId = 66
-  const chainId = process.env.REACT_APP_CHAIN_ID ?? '66'
-  return address[chainId] != null ? address[chainId] : address[mainNetChainId]
-}
-
-// 创建连接公共函数
-export const getContract = (abi: any, address: string, web3?: Web3): any => {
-  const _web3 = web3 ?? web3NoAccount
-  return new _web3.eth.Contract((abi as unknown) as AbiItem, address)
 }
